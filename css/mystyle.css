@@ -2,7 +2,11 @@ body {
     padding-left: 11em;
     font-family: 'Nova Flat';font-size: 22px;
     color: rgb(5, 57, 7);
-    background: url(../images/yellowbrick.png);}
+    background: url(../images/yellowbrick.png);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+    }
 
     html {
         box-sizing: border-box;
