@@ -7,6 +7,10 @@ const info = document.querySelector('.js-info');
 const heading = document.querySelector('.js-heading');
 const tileContainer = document.querySelector('.js-container');
 
+function goToMensa() { 
+    window.location.href =  
+    "https://www.us.mensa.org/"; 
+  } 
 function resetGame(text) {
   alert(text);
   sequence = [];
@@ -122,10 +126,11 @@ function handleClick(tile) {
   
     if (humanSequence.length === sequence.length) {
   
-      if (humanSequence.length === 20) {
+      if (humanSequence.length === 10) {
   
-        resetGame('Congrats! You completed all 20 levels! 0020 is the answer!');
-  
+        resetGame('Congrats! You completed all 10 levels!');
+        goToMensa();
+        
         return
   
       }
