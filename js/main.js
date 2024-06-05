@@ -9,7 +9,7 @@ const tileContainer = document.querySelector('.js-container');
 
 function goToMensa() { 
     window.location.href =  
-    "https://www.us.mensa.org/"; 
+    "https://docs.google.com/document/d/1-4GE3RH6np0TOODTE9ljh2yEXvSpTsr1KcIgZDEaKUw/edit/"; 
   } 
 function resetGame(text) {
   alert(text);
