@@ -126,9 +126,9 @@ function handleClick(tile) {
   
     if (humanSequence.length === sequence.length) {
   
-      if (humanSequence.length === 5) {
+      if (humanSequence.length === 10) {
   
-        resetGame('Congrats! You completed all 10 levels!');
+        resetGame('Good job! Get your hint!');
         goToMensa();
         
         return
