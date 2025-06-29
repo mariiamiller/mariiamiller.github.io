@@ -18,12 +18,21 @@
   #start-screen{display:block;}
   button{padding:10px 20px;margin:8px;font-size:1rem;cursor:pointer;}
   .question{font-size:1.2rem;margin-bottom:16px;max-width:600px;}
-  .log-screen{background:#000;color:#00ff00;width:100%;height:100vh;display:flex;justify-content:center;align-items:center;flex-direction:column;font-family:'Courier New',monospace;}
+  .matrix{
+    background:#000!important;
+    color:#00ff00!important;
+    width:100%;height:100vh;
+    display:flex;justify-content:center;align-items:center;flex-direction:column;
+    font-family:'Courier New',monospace;
+  }
   .log-entry{margin:4px 0;}
-  .wrong{background:#ffcccc;}
+  #timer{position:fixed;top:8px;right:12px;font-weight:bold;}
 </style>
 </head>
 <body>
+  <!-- Timer Display -->
+  <div id="timer" style="display:none;">Time: 60</div>
+
   <!-- Start Screen -->
   <div id="start-screen" class="screen">
     <h1>Wahaha Wildlife Reserve Security System</h1>
@@ -58,8 +67,8 @@
     <button class="answer" data-correct="false">Black‑browed Albatross</button>
   </div>
 
-  <!-- Log Screen -->
-  <div id="log-screen" class="screen log-screen">
+  <!-- Log Screen (Success) -->
+  <div id="log-screen" class="screen matrix">
     <div class="log-entry">10:48 PM — main access gate toggled open</div>
     <div class="log-entry">10:53 PM — someone entered avian enclosure (Z-tag override used)</div>
     <div class="log-entry">10:58 PM — main alarm override attempted – failed.</div>
@@ -68,26 +77,59 @@
     <div class="log-entry">Note: Security video corrupted. Auto-save failed.</div>
   </div>
 
+  <!-- Access Denied Screen -->
+  <div id="access-screen" class="screen matrix">
+    <h1>ACCESS DENIED</h1>
+  </div>
+
   <!-- Script -->
   <script>
-    const beginBtn=document.getElementById('begin-btn');
-    const screens=['q1-screen','q2-screen','q3-screen','log-screen'];
-    let current=0;
+    const beginBtn = document.getElementById('begin-btn');
+    const timerEl = document.getElementById('timer');
+    const questionScreens = ['q1-screen','q2-screen','q3-screen'];
+    let current = 0;
+    let timeLeft = 60;
+    let timerInterval;
+
+    function show(id){ document.getElementById(id).style.display='block'; }
+    function hide(id){ document.getElementById(id).style.display='none'; }
+
+    function startTimer(){
+      timerEl.style.display='block';
+      timerEl.textContent = `Time: ${timeLeft}`;
+      timerInterval = setInterval(()=>{
+        timeLeft--;
+        timerEl.textContent = `Time: ${timeLeft}`;
+        if(timeLeft<=0){ denyAccess(); }
+      },1000);
+    }
+
+    function denyAccess(){
+      clearInterval(timerInterval);
+      [...document.querySelectorAll('.screen')].forEach(s=>s.style.display='none');
+      show('access-screen');
+    }
 
     beginBtn.addEventListener('click',()=>{
-      document.getElementById('start-screen').style.display='none';
-      document.getElementById(screens[current]).style.display='block';
+      hide('start-screen');
+      show(questionScreens[current]);
+      startTimer();
     });
 
     document.querySelectorAll('.answer').forEach(btn=>{
       btn.addEventListener('click',function(){
         if(this.dataset.correct==='true'){
-          this.parentElement.style.display='none';
+          hide(questionScreens[current]);
           current++;
-          document.getElementById(screens[current]).style.display='block';
+          if(current < questionScreens.length){
+            show(questionScreens[current]);
+          }else{
+            clearInterval(timerInterval);
+            timerEl.style.display='none';
+            show('log-screen');
+          }
         }else{
-          this.classList.add('wrong');
-          setTimeout(()=>this.classList.remove('wrong'),600);
+          denyAccess();
         }
       });
     });
