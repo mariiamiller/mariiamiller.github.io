@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Safari Shenanigans Trivia – Mensa Edition</title>
+<style>
+  body{
+    font-family:'Trebuchet MS',sans-serif;
+    margin:0;
+    padding:0;
+    background:#f5f8f2;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+  }
+  .screen{display:none;text-align:center;padding:20px;}
+  #start-screen{display:block;}
+  button{padding:10px 20px;margin:8px;font-size:1rem;cursor:pointer;}
+  .question{font-size:1.2rem;margin-bottom:16px;max-width:600px;}
+  .log-screen{background:#000;color:#00ff00;width:100%;height:100vh;display:flex;justify-content:center;align-items:center;flex-direction:column;font-family:'Courier New',monospace;}
+  .log-entry{margin:4px 0;}
+  .wrong{background:#ffcccc;}
+</style>
+</head>
+<body>
+  <!-- Start Screen -->
+  <div id="start-screen" class="screen">
+    <h1>Wahaha Wildlife Reserve Security System</h1>
+    <p>Verify your identity to continue.</p>
+    <button id="begin-btn">Begin Verification</button>
+  </div>
+
+  <!-- Question 1 -->
+  <div id="q1-screen" class="screen">
+    <div class="question">1. Which marine mammal is currently considered the world's most endangered, with fewer than <em>ten</em> individuals believed to remain in the wild?</div>
+    <button class="answer" data-correct="true">Vaquita (<em>Phocoena sinus</em>)</button>
+    <button class="answer" data-correct="false">Yangtze River Dolphin</button>
+    <button class="answer" data-correct="false">Hawaiian Monk Seal</button>
+    <button class="answer" data-correct="false">Southern Sea Otter</button>
+  </div>
+
+  <!-- Question 2 -->
+  <div id="q2-screen" class="screen">
+    <div class="question">2. The elusive saola, nicknamed the “Asian unicorn,” was first described by Western science in which year?</div>
+    <button class="answer" data-correct="false">1975</button>
+    <button class="answer" data-correct="true">1992</button>
+    <button class="answer" data-correct="false">2000</button>
+    <button class="answer" data-correct="false">1963</button>
+  </div>
+
+  <!-- Question 3 -->
+  <div id="q3-screen" class="screen">
+    <div class="question">3. Which albatross species, restricted to a single breeding colony on Amsterdam Island, has an estimated adult population of fewer than 150 individuals?</div>
+    <button class="answer" data-correct="true">Amsterdam Albatross</button>
+    <button class="answer" data-correct="false">Wandering Albatross</button>
+    <button class="answer" data-correct="false">Laysan Albatross</button>
+    <button class="answer" data-correct="false">Black‑browed Albatross</button>
+  </div>
+
+  <!-- Log Screen -->
+  <div id="log-screen" class="screen log-screen">
+    <div class="log-entry">10:48 PM — main access gate toggled open</div>
+    <div class="log-entry">10:53 PM — someone entered avian enclosure (Z-tag override used)</div>
+    <div class="log-entry">10:58 PM — main alarm override attempted – failed.</div>
+    <div class="log-entry">11:05 PM — movement logged near perimeter. Subject ID unclear.</div>
+    <br>
+    <div class="log-entry">Note: Security video corrupted. Auto-save failed.</div>
+  </div>
+
+  <!-- Script -->
+  <script>
+    const beginBtn=document.getElementById('begin-btn');
+    const screens=['q1-screen','q2-screen','q3-screen','log-screen'];
+    let current=0;
+
+    beginBtn.addEventListener('click',()=>{
+      document.getElementById('start-screen').style.display='none';
+      document.getElementById(screens[current]).style.display='block';
+    });
+
+    document.querySelectorAll('.answer').forEach(btn=>{
+      btn.addEventListener('click',function(){
+        if(this.dataset.correct==='true'){
+          this.parentElement.style.display='none';
+          current++;
+          document.getElementById(screens[current]).style.display='block';
+        }else{
+          this.classList.add('wrong');
+          setTimeout(()=>this.classList.remove('wrong'),600);
+        }
+      });
+    });
+  </script>
+</body>
+</html>
