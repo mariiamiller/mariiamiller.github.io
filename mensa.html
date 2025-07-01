@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Mensa IQ Challenge</title>
+<style>
+  body{
+    font-family:'Trebuchet MS',sans-serif;
+    margin:0;
+    padding:0;
+    background:#f5f8f2;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+  }
+  /* generic screen styling */
+  .screen{display:none;text-align:center;padding:20px;}
+  #start-screen{display:block;}
+  button{padding:10px 20px;margin:8px;font-size:1rem;cursor:pointer;}
+  .question{font-size:1.2rem;margin-bottom:16px;max-width:600px;}
+  .matrix{
+    background:#000 !important;
+    color:#00ff00 !important;
+    width:100%;height:100vh;
+    justify-content:center;align-items:center;flex-direction:column;
+    font-family:'Courier New',monospace;
+  }
+  /* success green square */
+  #success-square{width:180px;height:180px;background:#00ff00;}
+  /* timer */
+  #timer{position:fixed;top:8px;right:12px;font-weight:bold;}
+  .wrong{background:#ffcccc;}
+</style>
+</head>
+<body>
+  <!-- Timer Display -->
+  <div id="timer" style="display:none;">Time: 90</div>
+
+  <!-- Start Screen -->
+  <div id="start-screen" class="screen">
+    <h1>Mensa IQ Verification Terminal</h1>
+    <p>Answer all questions correctly to authenticate.</p>
+    <button id="begin-btn">Begin Test</button>
+  </div>
+
+  <!-- Question 1 -->
+  <div id="q1-screen" class="screen">
+    <div class="question">1. Which number completes the sequence: 2, 4, 8, 16, ___?</div>
+    <button class="answer" data-correct="false">24</button>
+    <button class="answer" data-correct="true">32</button>
+    <button class="answer" data-correct="false">30</button>
+    <button class="answer" data-correct="false">26</button>
+  </div>
+
+  <!-- Question 2 -->
+  <div id="q2-screen" class="screen">
+    <div class="question">2. Which letter completes the sequence: A, D, G, J, ___?</div>
+    <button class="answer" data-correct="false">K</button>
+    <button class="answer" data-correct="false">L</button>
+    <button class="answer" data-correct="true">M</button>
+    <button class="answer" data-correct="false">N</button>
+  </div>
+
+  <!-- Question 3 -->
+  <div id="q3-screen" class="screen">
+    <div class="question">3. If all Bloops are Razzies and all Razzies are Lazzies, are all Bloops definitely Lazzies?</div>
+    <button class="answer" data-correct="true">Yes</button>
+    <button class="answer" data-correct="false">No</button>
+    <button class="answer" data-correct="false">Cannot be determined</button>
+    <button class="answer" data-correct="false">Only sometimes</button>
+  </div>
+
+  <!-- Question 4 -->
+  <div id="q4-screen" class="screen">
+    <div class="question">4. Book is to Reading as Fork is to ___?</div>
+    <button class="answer" data-correct="false">Drawing</button>
+    <button class="answer" data-correct="false">Writing</button>
+    <button class="answer" data-correct="false">Stirring</button>
+    <button class="answer" data-correct="true">Eating</button>
+  </div>
+
+  <!-- Question 5 -->
+  <div id="q5-screen" class="screen">
+    <div class="question">5. 3 : 9 : 27 :: 5 : 25 : ___?</div>
+    <button class="answer" data-correct="false">100</button>
+    <button class="answer" data-correct="false">75</button>
+    <button class="answer" data-correct="true">125</button>
+    <button class="answer" data-correct="false">225</button>
+  </div>
+
+  <!-- Success Screen -->
+  <div id="success-screen" class="screen matrix" style="display:none;">
+    <div id="success-square"></div>
+  </div>
+
+  <!-- Access Denied Screen -->
+  <div id="access-screen" class="screen matrix" style="display:none;">
+    <h1>ACCESS DENIED</h1>
+  </div>
+
+<script>
+  const beginBtn = document.getElementById('begin-btn');
+  const timerEl = document.getElementById('timer');
+  const questionScreens = ['q1-screen','q2-screen','q3-screen','q4-screen','q5-screen'];
+  let current = 0;
+  let timeLeft = 90;
+  let timerInterval;
+
+  function show(id){
+    const el = document.getElementById(id);
+    if(el.classList.contains('matrix')){ el.style.display='flex'; }
+    else{ el.style.display='block'; }
+  }
+  function hide(id){ document.getElementById(id).style.display='none'; }
+
+  function startTimer(){
+    timerEl.style.display='block';
+    timerEl.textContent = `Time: ${timeLeft}`;
+    timerInterval = setInterval(()=>{
+      timeLeft--;
+      timerEl.textContent = `Time: ${timeLeft}`;
+      if(timeLeft<=0){ denyAccess(); }
+    },1000);
+  }
+
+  function denyAccess(){
+    clearInterval(timerInterval);
+    [...document.querySelectorAll('.screen')].forEach(s=>s.style.display='none');
+    timerEl.style.display='none';
+    show('access-screen');
+  }
+
+  beginBtn.addEventListener('click',()=>{
+    hide('start-screen');
+    show(questionScreens[current]);
+    startTimer();
+  });
+
+  document.querySelectorAll('.answer').forEach(btn=>{
+    btn.addEventListener('click',function(){
+      if(this.dataset.correct==='true'){
+        hide(questionScreens[current]);
+        current++;
+        if(current < questionScreens.length){
+          show(questionScreens[current]);
+        }else{
+          clearInterval(timerInterval);
+          timerEl.style.display='none';
+          show('success-screen');
+        }
+      }else{
+        denyAccess();
+      }
+    });
+  });
+</script>
+</body>
+</html>
